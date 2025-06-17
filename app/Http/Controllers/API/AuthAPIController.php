@@ -28,7 +28,7 @@ class AuthAPIController extends APIController
 
     return response()->json([
         'message' => 'Accounted created. Awaiting for admin approval.',
-         new UserResource($user),
+         'user' => new UserResource($user),
     ], 201);
     
     }
@@ -77,7 +77,9 @@ public function deleteAccount(DeleteAccountRequest $request)
  }
  public function viewAccount(Request $request)
 {
-    return response()->json($request->user());
+    return response()->json([
+    'user' => new UserResource($request->user()),
+     ]);
 }
 
 public function updateAccount(UpdateAccountRequest $request)
@@ -86,7 +88,8 @@ public function updateAccount(UpdateAccountRequest $request)
 
     $user->update($request->validated());
 
-    return response()->json(['message' => 'Account updated successfully.',     new UserResource($user),
+    return response()->json(['message' => 'Account updated successfully.', 
+    'user' => new UserResource($user),
 ]); 
 }
 
