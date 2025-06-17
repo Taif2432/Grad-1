@@ -41,9 +41,7 @@ class ClientSessionAPIController extends APIController
     $sessions = Session::where('client_id', Auth::id())
     ->with('professional')->orderBy('scheduled_at', 'desc')->get();
 
-    // return response()->json(['my_sessions' => $sessions]);
-
-    return response()->json($sessions);
+    return response()->json(['my_sessions' => $sessions]);
     }
 
     public function cancelMySession($id)
@@ -61,7 +59,7 @@ class ClientSessionAPIController extends APIController
     ]);
     
     $session->professional->notify(new SessionCancelled($session,'client'));
-    return response()->json(['message'=>'Cancelled']);
+    return response()->json(['message'=>'Session Cancelled']);
 }
 
 public function joinSession($id)
@@ -88,19 +86,19 @@ public function joinSession($id)
     ]);
 }
 
-public function endSession($sessionId)
-{
-    $log = SessionLog::where('session_id', $sessionId)->latest()->first();
+// public function endSession($sessionId)
+// {
+//     $log = SessionLog::where('session_id', $sessionId)->latest()->first();
 
-    if ($log && is_null($log->ended_at)) {
-        $log->update([
-            'ended_at' => Carbon::now(),
-            'notes' => 'Session ended normally.'
-        ]);
-    }
+//     if ($log && is_null($log->ended_at)) {
+//         $log->update([
+//             'ended_at' => Carbon::now(),
+//             'notes' => 'Session ended normally.'
+//         ]);
+//     }
 
-    return response()->json(['message' => 'Session ended and log updated.']);
-}
+//     return response()->json(['message' => 'Session ended and log updated.']);
+// }
 
 
 public function deleteSession($id)
@@ -114,7 +112,7 @@ public function deleteSession($id)
         ], 404);
     }
 
-    // Optional: Check if the user is authorized to delete this session
+    // Check if the user is authorized to delete this session
     if (auth()->user()->id !== $session->client_id) {
         return response()->json([
             'success' => false,

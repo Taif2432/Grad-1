@@ -16,9 +16,6 @@ use storage\python\ai_categorization\categorize_content;
 
 class ProfessionalContentAPIController extends APIController
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
 {
     $contents = Content::where('professional_id', Auth::id())
@@ -29,10 +26,6 @@ class ProfessionalContentAPIController extends APIController
     return response()->json(['contents' => $contents]);
 }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
    public function store(ContentRequest  $request)
 {
     $filePath = null;
@@ -63,25 +56,16 @@ class ProfessionalContentAPIController extends APIController
     ]);
  }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
    public function update(ContentRequest $request, string $id)
 {
     $content = Content::findOrFail($id);
@@ -110,11 +94,6 @@ class ProfessionalContentAPIController extends APIController
 
     return response()->json(['message' => 'Content updated', 'data' => $content->load('categories')]);
 }
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $content = Content::findOrFail($id);
@@ -170,56 +149,10 @@ public function storeAvailability(AvailabilityRequest $request)
     $data['professional_id'] = auth()->id();
 
     $availability = Availability::create($data);
-    // ([
-    //     'professional_id' => auth()->id(),
-    //     'available_date' => $request->date,
-    //     'start_time' => $request->start_time,
-    //     'end_time' => $request->end_time,
-    // ]);
 
     return response()->json([
         'message' => 'Availability added successfully.',
         'availability' => $availability,
     ], 201);
 }
-
-
-//     protected function categorizeContentWithPython($text)
-// {
-//     $process = proc_open(
-//         'python storage/python/ai_categorization/categorize_content.py',
-//         [
-//             0 => ['pipe', 'r'], // stdin
-//             1 => ['pipe', 'w'], // stdout
-//             2 => ['pipe', 'w'], // stderr
-//         ],
-//         $pipes
-//     );
-
-//     if (is_resource($process)) {
-//         // Properly encode and write raw JSON to stdin
-//         $payload = json_encode(['text' => $text]);
-//         fwrite($pipes[0], $payload);
-//         fclose($pipes[0]);
-
-//         // Capture output and error
-//         $result = stream_get_contents($pipes[1]);
-//         fclose($pipes[1]);
-
-//         $error = stream_get_contents($pipes[2]);
-//         fclose($pipes[2]);
-
-//         proc_close($process);
-
-//         // Log if error
-//         if (trim($error)) {
-//             logger()->error("Python Error: $error");
-//         }
-
-//         return trim($result);
-//     }
-
-//     return 'Uncategorized';
-// }
-
 }

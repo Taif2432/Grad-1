@@ -25,9 +25,7 @@ class RegisterRequest extends FormRequest
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role' => 'required|in:admin,client,psychologist,volunteer',
-            // 'admin_code' => ['required_if:role,admin', Rule::in([env('ADMIN_SECRET_CODE')])],
-        
+            'role' => 'required|in:admin,client,psychologist,volunteer',        
         ];
     }
      /**

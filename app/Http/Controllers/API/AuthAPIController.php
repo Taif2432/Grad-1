@@ -5,9 +5,9 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\RegisterRequest; // Import RegisterRequest
-use App\Http\Requests\LoginRequest;    // Import LoginRequest
-use App\Http\Requests\DeleteAccountRequest; // Import DeleteAccountRequest
+use App\Http\Requests\RegisterRequest; 
+use App\Http\Requests\LoginRequest;    
+use App\Http\Requests\DeleteAccountRequest; 
 use App\Http\Requests\UpdateAccountRequest;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Resources\UserResource;
@@ -18,23 +18,16 @@ class AuthAPIController extends APIController
 {
     public function register(RegisterRequest $request)
      { 
-        // if ($request->role === 'admin' && $request->admin_code !== env('ADMIN_SECRET_CODE')) {
-        //     return response()->json(['message' => 'Invalid admin code.'], 403);
-        // }
-   
     $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => bcrypt($request->password),
         'role' => $request->role,
-        // 'role' => $validated['role'],
         'is_approved' => $request->role === 'admin' ? true : false, // auto approve admin
     ]);
 
     return response()->json([
         'message' => 'Accounted created. Awaiting for admin approval.',
-        // 'user' => $user,
-        // $user = User::findOrFail($id),
          new UserResource($user),
     ], 201);
     
@@ -95,7 +88,6 @@ public function updateAccount(UpdateAccountRequest $request)
 
     return response()->json(['message' => 'Account updated successfully.',     new UserResource($user),
 ]); 
-    // 'user' => $user
 }
 
 public function updatePassword(UpdatePasswordRequest $request)

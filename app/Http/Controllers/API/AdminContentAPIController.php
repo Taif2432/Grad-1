@@ -25,8 +25,7 @@ class AdminContentAPIController extends APIController
      */
     public function show(string $id)
 {
-    // $contents = Content::with('categories', 'professional')->findOrFail($id);
-    // return response()->json(['contents' => $contents]);
+    
 }
 
     /**

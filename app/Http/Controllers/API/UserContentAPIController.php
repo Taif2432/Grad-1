@@ -7,9 +7,7 @@ use App\Models\Content;
 
 class UserContentAPIController extends APIController
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index(Request $request)
 {
     $query = Content::with('categories')->latest();
@@ -36,9 +34,6 @@ class UserContentAPIController extends APIController
     return response()->json(['contents' => $contents]);
 }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $content = Content::with('categories', 'professional')->findOrFail($id);
