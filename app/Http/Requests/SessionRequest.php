@@ -33,7 +33,7 @@ class SessionRequest extends FormRequest
                 },
             ],
             'scheduled_at' => 'required|date|after:now',
-            'session_type' => 'required|in:chat,voice',
+            'communication_type' => 'required|in:chat,voice',
         ];
     }
 
@@ -50,7 +50,7 @@ class SessionRequest extends FormRequest
                     }
                 },],
             'scheduled_at.after' => 'The scheduled time must be in the future.',
-            'session_type.in' => 'Session type must be either chat or voice.',
+            'communication_type.in' => 'Session type must be either chat or voice.',
         ];
     }
 }

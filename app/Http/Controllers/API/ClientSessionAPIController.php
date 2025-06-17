@@ -25,7 +25,7 @@ class ClientSessionAPIController extends APIController
         'client_id' => auth()->id(),
         'professional_id' => $validated['professional_id'],
         'scheduled_at' => $validated['scheduled_at'],
-        'session_type' => $validated['session_type'],
+        'communication_type' => $validated['communication_type'],
     ]);
 
     // notify both
