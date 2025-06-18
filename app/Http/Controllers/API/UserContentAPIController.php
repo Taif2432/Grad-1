@@ -19,6 +19,13 @@ class UserContentAPIController extends APIController
         });
     }
 
+    // Filter by category name
+    if ($request->has('name')) {
+        $query->whereHas('categories', function ($q) use ($request) {
+            $q->where('name', $request->name);
+        });
+    }
+
     // Filter by type (e.g., article, video, pdf)
     if ($request->has('type')) {
         $query->where('type', $request->type);
@@ -42,7 +49,8 @@ class UserContentAPIController extends APIController
 
     public function getAvailableTypes()
 {
-    return response()->json(['types' => ['article', 'video', 'pdf']]);
+    $types = ContentType::all();
+        return response()->json(['content_types' => $types]);
 }
 
 

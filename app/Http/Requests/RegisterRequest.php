@@ -37,8 +37,8 @@ class RegisterRequest extends FormRequest
     {
         return [
             'email.unique' => 'This email is already registered.',
-            'admin_code.required_if' => 'The admin code is required when the role is admin.',
-            'admin_code.in' => 'Invalid admin code.',
+            // 'admin_code.required_if' => 'The admin code is required when the role is admin.',
+            // 'admin_code.in' => 'Invalid admin code.',
         ];
     }
 }

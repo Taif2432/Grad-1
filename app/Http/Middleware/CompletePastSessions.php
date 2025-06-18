@@ -1,6 +1,5 @@
 <?php
 
-// app/Http/Middleware/CompletePastSessions.php
 namespace App\Http\Middleware;
 
 use Closure;

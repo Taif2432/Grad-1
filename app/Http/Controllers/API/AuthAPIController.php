@@ -23,14 +23,22 @@ class AuthAPIController extends APIController
         'email' => $request->email,
         'password' => bcrypt($request->password),
         'role' => $request->role,
-        'is_approved' => $request->role === 'admin' ? true : false, // auto approve admin
+        'is_approved' => ($request->role === 'client' || $request->role === 'admin')  ? true : false, // auto approve admin & client
     ]);
 
-    return response()->json([
-        'message' => 'Accounted created. Awaiting for admin approval.',
-         'user' => new UserResource($user),
-    ], 201);
-    
+    $message = '';
+        if ($user->is_approved) {
+            // Message for clients/admins who are auto-approved
+            $message = 'Account created successfully. You can now log in.';
+        } else {
+            // Message for professionals awaiting approval
+            $message = 'Account created. Awaiting administrator approval.';
+        }
+
+        return response()->json([
+            'message' => $message,
+            'user' => new UserResource($user),
+        ], 201); // 201 Created status code is appropriate
     }
     
     public function login(LoginRequest $request)

@@ -9,7 +9,9 @@ use App\Http\Controllers\API\ProfessionalSessionAPIController;
 use App\Http\Controllers\API\ProfessionalContentAPIController;
 use App\Http\Controllers\API\AdminContentAPIController;
 use App\Http\Controllers\API\UserContentAPIController;
-use App\Http\Controllers\API\ContentTypeController;
+use App\Http\Controllers\API\MessageAPIController;
+
+// use App\Http\Controllers\API\ContentTypeAPIController;
 
 
 Route::get('/user', function (Request $request) {
@@ -32,7 +34,7 @@ Route::middleware(['auth:sanctum', 'approved'])->group(function () {
     });
 
     //client routes
-    Route::middleware(['auth:sanctum', 'approved'])->group(function () {
+Route::middleware(['auth:sanctum', 'complete_past_sessions'])->group(function () {
     Route::prefix('client')->group(function () {
         Route::post('/book-session', [ClientSessionAPIController::class, 'bookSession']);
         Route::get('/my-sessions', [ClientSessionAPIController::class, 'mySessions']);
@@ -46,7 +48,7 @@ Route::middleware(['auth:sanctum', 'approved'])->group(function () {
     }); });
 
     //Professional routes
-    Route::middleware(['auth:sanctum', 'approved'])->group(function () {
+Route::middleware(['auth:sanctum', 'complete_past_sessions'])->group(function () {
     Route::prefix('professional')->group(function () {
         //session
         Route::get('/upcoming-sessions', [ProfessionalSessionAPIController::class, 'upcomingSessions']);
@@ -64,7 +66,7 @@ Route::middleware(['auth:sanctum', 'approved'])->group(function () {
     }); });
 
     // Admin Routes
-    Route::middleware(['auth:sanctum', 'is.admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'is.admin'])->group(function () {
     Route::prefix('admin')->group(function () {
          //users info
         Route::get('/pending-users', [AdminAPIController::class, 'pendingUsers']);
@@ -77,9 +79,19 @@ Route::middleware(['auth:sanctum', 'approved'])->group(function () {
         Route::delete('/delete-content/{id}', [AdminContentAPIController::class, 'destroy']);
 }); });
 
-// User Routes
-Route::middleware('auth:sanctum')->get('/content', [UserContentAPIController::class, 'index']);
-//
-Route::get('/user/content', [UserContentAPIController::class, 'show']);
-Route::get('/user/content-types', [UserContentAPIController::class, 'getAvailableTypes']);
-Route::get('/content-types', [ContentTypeController::class, 'index']);
+    // User Routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('user')->group(function () {
+
+        Route::get('/content', [UserContentAPIController::class, 'index']); // all content-category name-id-search-type
+        // Route::get('/contents', [UserContentAPIController::class, 'show']);
+        Route::get('/content-types', [UserContentAPIController::class, 'getAvailableTypes']);
+
+        // Route::get('/content-types', [ContentTypeAPIController::class, 'index']);
+}); });
+
+//messaging routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/messages', [MessageAPIController::class, 'store']);
+    Route::get('/messages/{session_id}', [MessageAPIController::class, 'history']);
+});

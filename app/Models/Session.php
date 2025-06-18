@@ -13,8 +13,9 @@ class Session extends Model
         'client_id',
         'professional_id',
         'scheduled_at',
-        'session_type',
+        'communication_type',
         'status',
+        'is_anonymous',
     ];
 
     protected $casts = [

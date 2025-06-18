@@ -12,10 +12,15 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\SessionRequest;
 use App\Notifications\SessionCancelled;
 use App\Notifications\SessionConfirmed;
-
+// use App\Services\GenerateAgoraTokenService;
 
 class ClientSessionAPIController extends APIController
 {
+    // protected $agoraService;
+    // public function __construct(GenerateAgoraTokenService $agoraService )
+    // {
+    //     $this->agoraService = $agoraService;
+    // }
         // Book a session
     public function bookSession(SessionRequest $request)
     {
@@ -26,6 +31,7 @@ class ClientSessionAPIController extends APIController
         'professional_id' => $validated['professional_id'],
         'scheduled_at' => $validated['scheduled_at'],
         'communication_type' => $validated['communication_type'],
+        'is_anonymous' => $request->is_anonymous ?? false,
     ]);
 
     // notify both
@@ -85,6 +91,11 @@ public function joinSession($id)
         'session' => $session
     ]);
 }
+
+// private function generateAgoraToken($channel)
+// {
+//     return 'dummy_audio_token_'. $channel; 
+// }
 
 // public function endSession($sessionId)
 // {

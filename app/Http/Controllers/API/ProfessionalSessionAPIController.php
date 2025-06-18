@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Notifications\SessionCancelled;
 use App\Http\Requests\AvailabilityRequest; 
 use App\Models\Availability;
-
 use App\Http\Resources\SessionResource;
+// /use App\Services\GenerateAgoraTokenService;
 
 
 class ProfessionalSessionAPIController extends APIController
@@ -67,6 +67,11 @@ class ProfessionalSessionAPIController extends APIController
 
     return response()->json(['message' => 'Session started', 'session' => $session]);
 }
+
+// private function generateAgoraToken($channel)
+// {
+//     return 'dummy_audio_token_'. $channel; 
+// }
   // Mark session as completed
 public function completeSession($id)
 {

@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\SessionLog;
 use App\Http\Resources\SessionLogResource;
-
 use App\Http\Resources\UserResource;
 
 

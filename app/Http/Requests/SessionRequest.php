@@ -34,6 +34,7 @@ class SessionRequest extends FormRequest
             ],
             'scheduled_at' => 'required|date|after:now',
             'communication_type' => 'required|in:chat,voice',
+            'is_anonymous' => 'sometimes|boolean',
         ];
     }
 
