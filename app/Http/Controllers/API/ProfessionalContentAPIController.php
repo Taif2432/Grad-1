@@ -56,16 +56,6 @@ class ProfessionalContentAPIController extends APIController
     ]);
  }
 
-    public function show(string $id)
-    {
-        //
-    }
-
-    public function edit(string $id)
-    {
-        //
-    }
-
    public function update(ContentRequest $request, string $id)
 {
     $content = Content::findOrFail($id);
@@ -96,13 +86,13 @@ class ProfessionalContentAPIController extends APIController
 }
     public function destroy(string $id)
     {
-        $content = Content::findOrFail($id);
-        if ($content->professional_id !== Auth::id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $contents = Content::findOrFail($id);
+        if ($contents->file_path) {
+       Storage::disk('public')->delete($contents->file_path);
+       }
+        $contents->delete();
 
-        $content->delete();
-        return response()->json(['message' => 'Content deleted']);
+        return response()->json(['message' => 'Content deleted by pro']);
     }
 
 public function categorizeContentWithPython($text)
@@ -142,17 +132,5 @@ $process = proc_open(
     return 'Uncategorized';
 }
 
-public function storeAvailability(AvailabilityRequest $request)
-{
-    $data = $request->validated(); 
 
-    $data['professional_id'] = auth()->id();
-
-    $availability = Availability::create($data);
-
-    return response()->json([
-        'message' => 'Availability added successfully.',
-        'availability' => $availability,
-    ], 201);
-}
 }

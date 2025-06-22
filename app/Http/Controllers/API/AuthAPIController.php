@@ -38,7 +38,7 @@ class AuthAPIController extends APIController
         return response()->json([
             'message' => $message,
             'user' => new UserResource($user),
-        ], 201); // 201 Created status code is appropriate
+        ], 201); 
     }
     
     public function login(LoginRequest $request)

@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminContentAPIController extends APIController
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $contents = Content::with('categories', 'professional')->latest()->paginate(10);
@@ -20,23 +17,14 @@ class AdminContentAPIController extends APIController
 
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-{
-    
-}
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $contents = Content::findOrFail($id);
-        Storage::delete($contents->file_path);
+        if ($contents->file_path) {
+       Storage::disk('public')->delete($contents->file_path);
+       }
         $contents->delete();
 
         return response()->json(['message' => 'Content deleted by admin']);
     }
-}
+}    

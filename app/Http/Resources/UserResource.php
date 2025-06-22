@@ -7,11 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
@@ -20,6 +15,6 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'role' => $this->role,
             'is_approved' => $this->is_approved,
-            // intentionally excluding created_at and updated_at
+            // excluding created_at and updated_at
         ];    }
 }

@@ -11,24 +11,30 @@ use App\Notifications\SessionCancelled;
 use App\Http\Requests\AvailabilityRequest; 
 use App\Models\Availability;
 use App\Http\Resources\SessionResource;
-// /use App\Services\GenerateAgoraTokenService;
+// use App\Services\GenerateAgoraTokenService;
 
 
 class ProfessionalSessionAPIController extends APIController
-{
+{ 
       // View upcoming sessions
     public function upcomingSessions()
      {
-    $allSessions = Session::with('client')->get();
-    return SessionResource::collection($allSessions);
+        $professional_id = Auth::id();
+
+        $upcomingSessions = Session::with('client')
+                ->where('professional_id', $professional_id)
+                ->where('scheduled_at', '>=', now()) // sessions in the future
+                ->where('status', '!=', 'cancelled') // exclude cancelled sessions
+                ->orderBy('scheduled_at', 'desc')
+                ->get();
+    // $allSessions = Session::with('client')->get();
+    return SessionResource::collection($upcomingSessions);
 
      }
  
       // View past sessions
     public function pastSessions()
      {
-        Session::markPastSessionsCompleted();
-
         $sessions = Session::where('professional_id', Auth::id())
         ->where('scheduled_at', '<', now())
         ->whereIn('status', ['completed', 'cancelled']) // assuming cancelled is also "in the past"
@@ -39,7 +45,7 @@ class ProfessionalSessionAPIController extends APIController
         return response()->json(['past_sessions' => $sessions]);
      }
     
-        // Join a session (placeholder logic)
+        // Join a session
     public function joinSession($id)
      {
         $session = Session::where('id', $id)
@@ -72,6 +78,7 @@ class ProfessionalSessionAPIController extends APIController
 // {
 //     return 'dummy_audio_token_'. $channel; 
 // }
+
   // Mark session as completed
 public function completeSession($id)
 {
@@ -88,21 +95,18 @@ public function completeSession($id)
 
     return response()->json(['message' => 'Session marked as completed.']);
 }
-
 public function storeAvailability(AvailabilityRequest $request)
 {
-    $availability = Availability::create([
-        'professional_id' => auth()->id(),
-        'available_date' => $request->available_date,
-        'start_time' => $request->start_time,
-        'end_time' => $request->end_time,
-    ]);
+    $data = $request->validated(); 
+
+    $data['professional_id'] = auth()->id();
+
+    $availability = Availability::create($data);
 
     return response()->json([
-        'message' => 'Availability successfully added.',
-        'data' => $availability
+        'message' => 'Availability added successfully.',
+        'availability' => $availability,
     ], 201);
-
 }
 
 // Cancel a session
@@ -110,8 +114,16 @@ public function cancelSession($id)
 {
     $session = Session::where('id',$id)
                       ->where('professional_id',auth()->id())
-                      ->firstOrFail();
-    $session->update(['status'=>'cancelled']);
+                    //   ->firstOrFail();
+                    ->first();
+        if (!$session) {
+        return response()->json(['message' => 'Session not found or you do not have permission to cancel it.'], 404);
+    }
+
+    // $session->update(['status'=>'cancelled']);
+    $session->status = 'cancelled';
+    $session->save();
+
 
     // Log cancellation
     SessionLog::create([
@@ -121,6 +133,11 @@ public function cancelSession($id)
     ]);
     
     $session->client->notify(new SessionCancelled($session,'professional'));
-    return response()->json(['message'=>'Cancelled']);
+    // return response()->json(['message'=>'Cancelled successfully']);
+    return response()->json([
+        'success' => true,
+        'message' => 'Session has been successfully cancelled.',
+        'session' => $session
+    ]);
 }
 }

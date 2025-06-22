@@ -53,12 +53,4 @@ class UserContentAPIController extends APIController
         return response()->json(['content_types' => $types]);
 }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

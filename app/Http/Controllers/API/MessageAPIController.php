@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Events\NewMessage;
 use App\Models\Message;
 use App\Models\Session;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,16 +19,32 @@ class MessageAPIController extends APIController
         'message' => 'required|string',
     ]);
 
+    // $message = Message::create([
+    //     'session_id' => $validated['session_id'],
+    //     'sender_id' => Auth::id(),
+    //     'message' => $validated['message'],
+    // ]);
+
+  \Log::info(' creating///', $validated);
     $message = Message::create([
         'session_id' => $validated['session_id'],
         'sender_id' => Auth::id(),
         'message' => $validated['message'],
     ]);
+    \Log::info('✅ Message saved', ['id' => $message->id]);
 
-    // Broadcast the message
+    $message->load('sender');
+
+     //Broadcast the message
+    \Log::info('Auth ID:' . Auth::id());
     broadcast(new NewMessage($message))->toOthers();
+    \Log::info('Storing .....2');
 
-    return response()->json($message);
+    return response()->json([
+    'status' => 'success',
+    'message' => 'Message sent successfully.',
+    'data' => $message-> ToArray(),
+]);
 }
 
     public function history($session_id)

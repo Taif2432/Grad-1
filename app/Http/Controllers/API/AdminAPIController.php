@@ -36,7 +36,7 @@ class AdminAPIController extends APIController
         return (new UserResource($user)) ->additional([ 'message'=> 'User approved successfully']);
     }
 
-    // Reject (delete) a specific user
+    // Reject a specific user
     public function rejectUser($id)
     {
        if (auth()->user()->role !== 'admin') {

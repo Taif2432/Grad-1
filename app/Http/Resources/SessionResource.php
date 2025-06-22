@@ -7,11 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class SessionResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
@@ -29,6 +24,5 @@ class SessionResource extends JsonResource
                 "role" => $this->client->role ?? null,
                 "is_approved" => $this->client->is_approved ?? null,
             ],
-            // other fields you want to include
         ];    }
 }

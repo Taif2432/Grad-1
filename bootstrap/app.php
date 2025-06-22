@@ -18,18 +18,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // $app->routeMiddleware([
-        //     'approved' => App\Http\Middleware\EnsureUserIsApproved::class,
-        // ]);
         $middleware->alias([
             'approved' => EnsureUserIsApproved::class,
             'is.admin' => IsAdmin::class,
             'complete_past_sessions' => CompletePastSessions::class,
         ]);
-
-
-
     })
+    ->withBroadcasting(__DIR__.'/../routes/channels.php')
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withProviders([
+        App\Providers\BroadcastServiceProvider::class,
+    ])
+    
+    ->create();

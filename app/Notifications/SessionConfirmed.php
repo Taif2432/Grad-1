@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-
+ 
 class SessionConfirmed extends Notification
 {
     use Queueable;

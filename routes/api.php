@@ -13,7 +13,6 @@ use App\Http\Controllers\API\MessageAPIController;
 
 // use App\Http\Controllers\API\ContentTypeAPIController;
 
-
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -24,6 +23,7 @@ Route::post('/login', [AuthAPIController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
 Route::post('/logout', [AuthAPIController::class, 'logout']);
 });
+
 
 Route::middleware(['auth:sanctum', 'approved'])->group(function () {
     // Protected routes go here
@@ -46,7 +46,7 @@ Route::middleware(['auth:sanctum', 'complete_past_sessions'])->group(function ()
         Route::post('/feedback', [ClientSessionAPIController::class,'feedback']);
 
     }); });
-
+ 
     //Professional routes
 Route::middleware(['auth:sanctum', 'complete_past_sessions'])->group(function () {
     Route::prefix('professional')->group(function () {
@@ -62,7 +62,7 @@ Route::middleware(['auth:sanctum', 'complete_past_sessions'])->group(function ()
         Route::put('/update-content/{id}', [ProfessionalContentAPIController::class, 'update']);
         Route::delete('/delete-content/{id}', [ProfessionalContentAPIController::class, 'destroy']);
         //availability
-        Route::post('/availability', [ProfessionalContentAPIController::class, 'storeAvailability']);
+        Route::post('/availability', [ProfessionalSessionAPIController::class, 'storeAvailability']);
     }); });
 
     // Admin Routes
@@ -84,14 +84,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('user')->group(function () {
 
         Route::get('/content', [UserContentAPIController::class, 'index']); // all content-category name-id-search-type
-        // Route::get('/contents', [UserContentAPIController::class, 'show']);
         Route::get('/content-types', [UserContentAPIController::class, 'getAvailableTypes']);
 
-        // Route::get('/content-types', [ContentTypeAPIController::class, 'index']);
 }); });
 
 //messaging routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/messages', [MessageAPIController::class, 'store']);
-    Route::get('/messages/{session_id}', [MessageAPIController::class, 'history']);
+    Route::get('/messages-view/{session_id}', [MessageAPIController::class, 'history']);
 });
