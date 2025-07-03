@@ -20,7 +20,7 @@ class ContentRequest extends FormRequest
             'description' => 'required|string',
             'type' => 'required|in:article,video,pdf',
             'content_type_id' => 'required|exists:content_types,id',
-            'file' => 'nullable|file|mimes:pdf,mp4,docx,webm,avi|max:10240',
+            'file' => 'required|file|mimes:pdf,mp4,docx,txt,jpg,png,webm,avi|max:10240',
         ];
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
-
+ 
 use App\Models\Content;
 use App\Models\Category;
 use App\Models\ContentType;
@@ -23,30 +23,70 @@ class ProfessionalContentAPIController extends APIController
         ->latest()
         ->paginate(10);
 
+    // Add full URL for each content's file path if exists
+    $contents->getCollection()->transform(function ($content) {
+        if ($content->file_path) {
+            $content->file_url = asset('storage/' . $content->file_path);
+        } else {
+            $content->file_url = null;
+        }
+        return $content;
+    });
+
     return response()->json(['contents' => $contents]);
 }
 
-   public function store(ContentRequest  $request)
+//    public function store(ContentRequest  $request)
+// {
+//     $file_Path = null;
+//     if ($request->hasFile('file')) {
+//     $file_Path = $request->file('file')->store('contents', 'public');
+// }
+
+//     $content = Content::create([
+//         'title' => $request->title,
+//         'description' => $request->description,
+//         'content_type_id' => $request->content_type_id,
+//         'type' => $request->type,
+//         'file_Path' => $file_Path,
+//         'professional_id' => Auth::id(),
+//     ]);
+
+//     // Optionally run category detection
+//     $text = $request->title . ' ' . $request->description;
+//     $category = $this->categorizeContentWithPython($text);
+
+//     // Attach category by name (assumes names are unique)
+//     $categoryModel = \App\Models\Category::firstOrCreate(['name' => $category]);
+//     $content->categories()->sync([$categoryModel->id]);
+
+//     return response()->json([
+//         'message' => 'Content created successfully',
+//         'data' => $content->load('categories')
+//     ]);
+//  }
+public function store(ContentRequest $request)
 {
     $filePath = null;
+
+    // Handle file upload first
     if ($request->hasFile('file')) {
-        $filePath = $request->file('file')->store('contents');
+        $filePath = $request->file('file')->store('contents', 'public');
     }
 
+    // Create content with file path
     $content = Content::create([
         'title' => $request->title,
         'description' => $request->description,
         'content_type_id' => $request->content_type_id,
         'type' => $request->type,
-        'file_path' => $filePath,
+        'file_path' => $filePath, // this is now correct
         'professional_id' => Auth::id(),
     ]);
 
-    // Optionally run category detection
+    // AI-based auto-categorization
     $text = $request->title . ' ' . $request->description;
     $category = $this->categorizeContentWithPython($text);
-
-    // Attach category by name (assumes names are unique)
     $categoryModel = \App\Models\Category::firstOrCreate(['name' => $category]);
     $content->categories()->sync([$categoryModel->id]);
 
@@ -54,7 +94,7 @@ class ProfessionalContentAPIController extends APIController
         'message' => 'Content created successfully',
         'data' => $content->load('categories')
     ]);
- }
+}
 
    public function update(ContentRequest $request, string $id)
 {

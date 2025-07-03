@@ -6,7 +6,6 @@ use App\Events\NewMessage;
 use App\Models\Message;
 use App\Models\Session;
 use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,11 +18,6 @@ class MessageAPIController extends APIController
         'message' => 'required|string',
     ]);
 
-    // $message = Message::create([
-    //     'session_id' => $validated['session_id'],
-    //     'sender_id' => Auth::id(),
-    //     'message' => $validated['message'],
-    // ]);
 
   \Log::info(' creating///', $validated);
     $message = Message::create([
@@ -31,7 +25,7 @@ class MessageAPIController extends APIController
         'sender_id' => Auth::id(),
         'message' => $validated['message'],
     ]);
-    \Log::info('✅ Message saved', ['id' => $message->id]);
+    \Log::info(' Message saved', ['id' => $message->id]);
 
     $message->load('sender');
 

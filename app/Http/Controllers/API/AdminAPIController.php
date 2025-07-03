@@ -22,7 +22,7 @@ class AdminAPIController extends APIController
         return UserResource::collection($pending) ->additional([ 'message'=> 'Pending users:']); 
 
     }
-
+ 
     // Approve a specific user
     public function approveUser($id)
     {

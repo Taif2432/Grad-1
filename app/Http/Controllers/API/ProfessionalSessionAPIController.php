@@ -15,7 +15,7 @@ use App\Http\Resources\SessionResource;
 
 
 class ProfessionalSessionAPIController extends APIController
-{ 
+{  
       // View upcoming sessions
     public function upcomingSessions()
      {
@@ -27,11 +27,8 @@ class ProfessionalSessionAPIController extends APIController
                 ->where('status', '!=', 'cancelled') // exclude cancelled sessions
                 ->orderBy('scheduled_at', 'desc')
                 ->get();
-    // $allSessions = Session::with('client')->get();
     return SessionResource::collection($upcomingSessions);
-
      }
- 
       // View past sessions
     public function pastSessions()
      {
